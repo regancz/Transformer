@@ -1,8 +1,8 @@
-package com.charles.transformer.service;
+package com.charles.transformer.service.impl;
 
+import com.charles.transformer.model.Customer;
+import com.charles.transformer.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.davidarchanjo.model.domain.Customer;
-import io.davidarchanjo.repository.CustomerRepository;
 import io.debezium.data.Envelope.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;

@@ -1,6 +1,8 @@
 package com.charles.transformer.listener;
 
+import com.charles.transformer.service.DataProcessService;
 import io.debezium.config.Configuration;
+import io.debezium.data.Envelope;
 import io.debezium.embedded.Connect;
 import io.debezium.engine.DebeziumEngine;
 import io.debezium.engine.RecordChangeEvent;
@@ -8,6 +10,7 @@ import io.debezium.engine.format.ChangeEventFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.connect.data.Struct;
 import org.apache.kafka.connect.source.SourceRecord;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -21,7 +24,8 @@ import java.util.concurrent.Executors;
 @Component
 public class DebeziumListener {
 
-    private final Executor executor = Executors.newSingleThreadExecutor();    
+    private final Executor executor = Executors.newSingleThreadExecutor();
+
     private final DebeziumEngine<RecordChangeEvent<SourceRecord>> debeziumEngine;
 
     public DebeziumListener(Configuration customerConnectorConfiguration) {
@@ -36,8 +40,8 @@ public class DebeziumListener {
         log.info("Key = {}, Value = {}", sourceRecord.key(), sourceRecord.value());
         var sourceRecordChangeValue= (Struct) sourceRecord.value();
         log.info("SourceRecordChangeValue = '{}'", sourceRecordChangeValue);
-        // if (sourceRecordChangeValue != null) {
-        //     Operation operation = Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
+//         if (sourceRecordChangeValue != null) {
+//             Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
 
         // Operation.READ operation events are always triggered when application initializes
         // We're only interested in CREATE operation which are triggered upon new insert registry

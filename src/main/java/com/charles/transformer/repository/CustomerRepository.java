@@ -1,6 +1,6 @@
 package com.charles.transformer.repository;
 
-import io.davidarchanjo.model.domain.Customer;
+import com.charles.transformer.model.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.charles.transformer.model.domain;
+package com.charles.transformer.model;
 
 import lombok.Data;
 

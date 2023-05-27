@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * @author charles
  * @date 5/27/2023 10:35 PM
@@ -22,14 +24,14 @@ public class FabricMetricSender {
     /**
      * 发送异步消息
      *
-     * @param topic   topic
-     * @param userId 消息体
+     * @param topic     topic
+     * @param payload   消息体
      */
-    public void asyncSendMessage(String topic, Long userId) {
-        rocketMQTemplate.asyncSend(topic, userId, new SendCallback() {
+    public void asyncSendMessage(String topic, Map<String, Object> payload) {
+        rocketMQTemplate.asyncSend(topic, payload, new SendCallback() {
             @Override
             public void onSuccess(SendResult sendResult) {
-                LOGGER.info("异步消息发送成功，userId = {}, SendStatus = {}", userId, sendResult.getSendStatus());
+                LOGGER.info("异步消息发送成功，payload = {}, SendStatus = {}", payload, sendResult.getSendStatus());
             }
 
             @Override
