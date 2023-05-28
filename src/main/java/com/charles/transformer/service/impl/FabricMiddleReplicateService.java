@@ -7,6 +7,10 @@ import com.charles.transformer.repository.FabricMiddleStateMetricRepository;
 import com.charles.transformer.service.ReplicateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.debezium.data.Envelope;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -17,7 +21,7 @@ import java.util.Map;
  */
 @Service
 public class FabricMiddleReplicateService implements ReplicateService {
-
+    @Autowired
     private FabricMiddleStateMetricRepository fabricMiddleStateMetricRepository;
 
     @Override

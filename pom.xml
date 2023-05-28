@@ -20,6 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <debezium.version>1.9.4.Final</debezium.version>
         <rocketmq-version>2.2.2</rocketmq-version>
+        <rocketmq-client-java-version>5.0.5</rocketmq-client-java-version>
     </properties>
 
     <dependencies>
@@ -70,6 +71,11 @@
             <groupId>org.apache.rocketmq</groupId>
             <artifactId>rocketmq-spring-boot-starter</artifactId>
             <version>${rocketmq-version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-client-java</artifactId>
+            <version>${rocketmq-client-java-version}</version>
         </dependency>
     </dependencies>
 

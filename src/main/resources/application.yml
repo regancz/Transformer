@@ -9,7 +9,7 @@ spring:
     username: root
     password: 123456
 rocketmq:
-  name-server: localhost:9876 # RocketMQ Namesrv
+  name-server: 192.168.3.25:9876 # RocketMQ Namesrv
   # Producer 配置项
   producer:
     group: charles-fabric-metric # 生产者分组
@@ -28,5 +28,13 @@ rocketmq:
 #    listeners: # 配置某个消费分组，是否监听指定 Topic 。结构为 Map<消费者分组, <Topic, Boolean>> 。默认情况下，不配置表示监听。
 #      charles-fabric-metric:
 #        topic1: false # 关闭 charles-fabric-metric 对 topic1 的监听消费
+customer:
+  datasource:
+    host: 127.0.0.1
+    port: 3306
+    database: fabric
+    username: root
+    password: 123456
+
 
 

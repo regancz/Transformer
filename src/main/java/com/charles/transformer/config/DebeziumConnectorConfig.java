@@ -59,7 +59,7 @@ public class DebeziumConnectorConfig {
             .with("database.server.id", "10181")
 
             // https://debezium.io/documentation/reference/stable/connectors/mysql.html#mysql-property-database-server-name
-            .with("database.server.name", "customer-mysql-db-server")
+            .with("database.server.name", "transformer_mysql_server")
 
             // https://debezium.io/documentation/reference/stable/operations/debezium-server.html#debezium-source-database-history-class
             .with("database.history", "io.debezium.relational.history.FileDatabaseHistory")

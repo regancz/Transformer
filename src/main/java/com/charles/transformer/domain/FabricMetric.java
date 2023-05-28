@@ -18,14 +18,14 @@ public class FabricMetric {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long TotalTx;
+    private Long total_tx;
 
-    private Long Latency;
+    private Long latency;
 
-    private Long TPS;
+    private Long tps;
 
-    private Long IOPS;
+    private Long iops;
 
-    private Long AvgLatency;
+    private Long avg_latency;
 
 }

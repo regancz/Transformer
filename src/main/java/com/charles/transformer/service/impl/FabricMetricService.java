@@ -9,6 +9,8 @@ import org.apache.kafka.connect.data.Struct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -25,7 +27,7 @@ public class FabricMetricService implements DataProcessService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FabricMetricService.class);
 
     @Autowired
-    private FabricReplicateService fabricReplicateService;
+    private FabricMiddleReplicateService fabricMiddleReplicateService;
 
     @Autowired
     private FabricMetricSender fabricMetricSender;
@@ -33,27 +35,27 @@ public class FabricMetricService implements DataProcessService {
     @Override
     public Object DataProcess(Struct sourceRecordChangeValue) {
         if (sourceRecordChangeValue != null) {
-             Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
+            Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
 
-             //Envelope.Operation.READ operation events are always triggered when application initializes
-             //We're only interested in CREATE operation which are triggered upon new insert registry
-             if(operation != Envelope.Operation.READ) {
-                 //Handling Update & Insert operations.
-                 String record = operation == Envelope.Operation.DELETE ? BEFORE : AFTER;
-                 Struct struct = (Struct) sourceRecordChangeValue.get(record);
-                 Map<String, Object> payload = struct.schema().fields().stream()
-                     .map(Field::name)
-                     .filter(fieldName -> struct.get(fieldName) != null)
-                     .map(fieldName -> Pair.of(fieldName, struct.get(fieldName)))
-                     .collect(toMap(Pair::getKey, Pair::getValue));
+            //Envelope.Operation.READ operation events are always triggered when application initializes
+            //We're only interested in CREATE operation which are triggered upon new insert registry
+            if(operation != Envelope.Operation.READ) {
+             //Handling Update & Insert operations.
+             String record = operation == Envelope.Operation.DELETE ? BEFORE : AFTER;
+             Struct struct = (Struct) sourceRecordChangeValue.get(record);
+             Map<String, Object> payload = struct.schema().fields().stream()
+                 .map(Field::name)
+                 .filter(fieldName -> struct.get(fieldName) != null)
+                 .map(fieldName -> Pair.of(fieldName, struct.get(fieldName)))
+                 .collect(toMap(Pair::getKey, Pair::getValue));
 
-                 this.fabricReplicateService.replicateData(payload, operation);
-                 LOGGER.info("Updated Data: {} with Operation: {}", payload, operation.name());
-                 //data processing
-                 Long afterTotalTx = (Long)payload.get("total_tx") * 1000;
-                 payload.put("total_tx", afterTotalTx);
-                 //send to next station
-                 fabricMetricSender.asyncSendOrderly("charles-fabric-metric", payload, (String) payload.get("id"));
+             this.fabricMiddleReplicateService.replicateData(payload, operation);
+             LOGGER.info("Updated Data: {} with Operation: {}", payload, operation.name());
+             //data processing
+             Long afterTotalTx = (Long)payload.get("total_tx") * 1000;
+             payload.put("total_tx", afterTotalTx);
+             //send to next station
+             fabricMetricSender.asyncSendOrderly("charles-fabric-metric", payload, (String) payload.get("id"));
              }
         }
         return null;

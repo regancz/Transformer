@@ -22,9 +22,6 @@ public class FabricMetricSender {
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
 
-    @Value("${rocketmq.expire.ttl}")
-    private Long ROCKETMQ_EXPIRE_TIMEOUT;
-
     /**
      * 发送异步消息
      *
@@ -42,6 +39,6 @@ public class FabricMetricSender {
             public void onException(Throwable e) {
                 LOGGER.info("异步消息发送异常, exception = {}", e.getMessage());
             }
-        }, ROCKETMQ_EXPIRE_TIMEOUT);
+        });
     }
 }
