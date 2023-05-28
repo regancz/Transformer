@@ -9,6 +9,7 @@ import org.apache.kafka.connect.data.Struct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
@@ -19,6 +20,7 @@ import static java.util.stream.Collectors.toMap;
  * @author charles
  * @date 5/27/2023 10:48 PM
  */
+@Service
 public class FabricMetricService implements DataProcessService {
     private static final Logger LOGGER = LoggerFactory.getLogger(FabricMetricService.class);
 
@@ -47,8 +49,11 @@ public class FabricMetricService implements DataProcessService {
 
                  this.fabricReplicateService.replicateData(payload, operation);
                  LOGGER.info("Updated Data: {} with Operation: {}", payload, operation.name());
-
-                 fabricMetricSender.asyncSendMessage("", payload);
+                 //data processing
+                 Long afterTotalTx = (Long)payload.get("total_tx") * 1000;
+                 payload.put("total_tx", afterTotalTx);
+                 //send to next station
+                 fabricMetricSender.asyncSendOrderly("charles-fabric-metric", payload, (String) payload.get("id"));
              }
         }
         return null;

@@ -13,17 +13,14 @@ import java.util.Map;
 
 /**
  * @author charles
- * @date 5/27/2023 10:35 PM
+ * @date 5/28/2023 11:48 AM
  */
 @Component
-public class FabricMetricSender {
-    private static final Logger LOGGER = LoggerFactory.getLogger(FabricMetricSender.class);
+public class FabricResultSender {
+    private static final Logger LOGGER = LoggerFactory.getLogger(FabricResultSender.class);
 
     @Autowired
     private RocketMQTemplate rocketMQTemplate;
-
-    @Value("${rocketmq.expire.ttl}")
-    private Long ROCKETMQ_EXPIRE_TIMEOUT;
 
     /**
      * 发送异步消息
@@ -42,6 +39,6 @@ public class FabricMetricSender {
             public void onException(Throwable e) {
                 LOGGER.info("异步消息发送异常, exception = {}", e.getMessage());
             }
-        }, ROCKETMQ_EXPIRE_TIMEOUT);
+        });
     }
 }

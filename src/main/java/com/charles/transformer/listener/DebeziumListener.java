@@ -1,6 +1,7 @@
 package com.charles.transformer.listener;
 
 import com.charles.transformer.service.DataProcessService;
+import com.charles.transformer.service.impl.FabricMetricService;
 import io.debezium.config.Configuration;
 import io.debezium.data.Envelope;
 import io.debezium.embedded.Connect;
@@ -27,6 +28,9 @@ public class DebeziumListener {
     private final Executor executor = Executors.newSingleThreadExecutor();
 
     private final DebeziumEngine<RecordChangeEvent<SourceRecord>> debeziumEngine;
+
+    @Autowired
+    private FabricMetricService fabricMetricService;
 
     public DebeziumListener(Configuration customerConnectorConfiguration) {
         this.debeziumEngine = DebeziumEngine.create(ChangeEventFormat.of(Connect.class))
@@ -59,6 +63,8 @@ public class DebeziumListener {
         //         log.info("Updated Data: {} with Operation: {}", payload, operation.name());
         //     }
         // }
+
+        fabricMetricService.DataProcess(sourceRecordChangeValue);
     }
 
     @PostConstruct

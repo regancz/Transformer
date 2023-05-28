@@ -1,6 +1,6 @@
 package com.charles.transformer.service.impl;
 
-import com.charles.transformer.model.Customer;
+import com.charles.transformer.domain.Customer;
 import com.charles.transformer.repository.CustomerRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.debezium.data.Envelope.Operation;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-@Profile("db")
 @RequiredArgsConstructor
 public class CustomerService {
 

@@ -1,7 +1,9 @@
 package com.charles.transformer.service.impl;
 
 import com.charles.transformer.domain.FabricMetric;
+import com.charles.transformer.domain.FabricMiddleStateMetric;
 import com.charles.transformer.repository.FabricMetricRepository;
+import com.charles.transformer.repository.FabricMiddleStateMetricRepository;
 import com.charles.transformer.service.ReplicateService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.debezium.data.Envelope;
@@ -11,21 +13,21 @@ import java.util.Map;
 
 /**
  * @author charles
- * @date 5/27/2023 11:18 PM
+ * @date 5/28/2023 2:47 PM
  */
 @Service
-public class FabricReplicateService implements ReplicateService {
+public class FabricMiddleReplicateService implements ReplicateService {
 
-    private FabricMetricRepository fabricMetricRepository;
+    private FabricMiddleStateMetricRepository fabricMiddleStateMetricRepository;
 
     @Override
     public void replicateData(Map<String, Object> customerData, Envelope.Operation operation) {
         final ObjectMapper mapper = new ObjectMapper();
-        final FabricMetric fabricMetric = mapper.convertValue(customerData, FabricMetric.class);
+        final FabricMiddleStateMetric fabricMiddleStateMetric = mapper.convertValue(customerData, FabricMiddleStateMetric.class);
         if (Envelope.Operation.DELETE == operation) {
-            fabricMetricRepository.deleteById(fabricMetric.getId());
+            fabricMiddleStateMetricRepository.deleteById(fabricMiddleStateMetric.getId());
         } else {
-            fabricMetricRepository.save(fabricMetric);
+            fabricMiddleStateMetricRepository.save(fabricMiddleStateMetric);
         }
     }
 }
