@@ -7,13 +7,16 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Transformer" />
+        <module name="transformer-core" />
+        <module name="transformer-mbg" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Transformer" options="-parameters" />
+      <module name="Transformer" options="" />
+      <module name="transformer-core" options="-parameters" />
+      <module name="transformer-mbg" options="-parameters" />
     </option>
   </component>
 </project>

@@ -1,33 +1,58 @@
-version: '3'
+version: '3.5'
+
 services:
-  namesrv:
-    image: apacherocketmq/rocketmq
-    container_name: namesrv
+  rmqnamesrv:
+    image: foxiswho/rocketmq:server-4.3.2
+    #    image: registry.cn-hangzhou.aliyuncs.com/foxiswho/rocketmq:4.7.0
+    container_name: rmqnamesrv
     ports:
       - 9876:9876
-#    volumes:
-#      - ./data/namesrv/logs:/home/rocketmq/logs
-    command: sh mqnamesrv
-  broker:
-    image: apacherocketmq/rocketmq
+    volumes:
+      - ./rmqs/logs:/home/rocketmq/logs
+      - ./rmqs/store:/home/rocketmq/store
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/home/rocketmq -Xms512M -Xmx512M -Xmn128m"
+    command: ["sh","mqnamesrv"]
+    networks:
+      rmq:
+        aliases:
+          - rmqnamesrv
+  rmqbroker:
+    image: foxiswho/rocketmq:broker-4.5.1
+    #    image: registry.cn-hangzhou.aliyuncs.com/foxiswho/rocketmq:4.7.0
     container_name: rmqbroker
     ports:
       - 10909:10909
       - 10911:10911
-      - 10912:10912
-#    volumes:
-#      - ./data/broker/logs:/home/rocketmq/logs
-#      - ./data/broker/store:/home/rocketmq/store
-#      - ./data/broker/broker.conf:/home/rocketmq/rocketmq-4.6.0/conf/broker.conf
-    command: sh mqbroker -n namesrv:9876 -c ../conf/broker.conf
+    volumes:
+      - ./rmq/logs:/home/rocketmq/logs
+      - ./rmq/store:/home/rocketmq/store
+      - ./rmq/brokerconf/broker.conf:/etc/rocketmq/broker.conf
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/home/rocketmq -Xms512M -Xmx512M -Xmn128m"
+    command: ["sh","mqbroker","-c","/etc/rocketmq/broker.conf","-n","rmqnamesrv:9876","autoCreateTopicEnable=true"]
     depends_on:
-      - namesrv
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqbroker
+
   rmqconsole:
     image: styletang/rocketmq-console-ng
     container_name: rmqconsole
     ports:
-      - 8080:8080
+      - 8180:8080
     environment:
-      JAVA_OPTS: -Drocketmq.namesrv.addr=namesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=rmqnamesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
     depends_on:
-      - namesrv
+      - rmqnamesrv
+    networks:
+      rmq:
+        aliases:
+          - rmqconsole
+
+networks:
+  rmq:
+    name: rmq
+    driver: bridge
