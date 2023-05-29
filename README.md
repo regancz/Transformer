@@ -6,7 +6,7 @@ Transformer 是可为变更数据捕获 (CDC) 提供低延迟数据流平台。�
 
 Transformer是一个变更数据捕获 (CDC) 平台，它通过重用 Kafka 和 Kafka Connect 来实现其耐用性、可靠性和容错质量。部署到 Kafka Connect 分布式、可扩展、容错服务的每个连接器都监视单个上游数据库服务器，捕获所有更改并将它们记录在一个或多个 Kafka 主题（通常每个数据库表一个主题）中。Kafka 确保所有这些数据更改事件都被复制和完全有序，并允许许多客户端独立使用这些相同的数据更改事件，而对上游系统的影响很小。此外，客户可以随时停止消费，当他们重新开始消费时，他们会从中断的地方继续消费。每个客户端都可以确定他们是否想要一次或至少一次交付所有数据更改事件。
 
-![Transformer](F:\Download\Transformer.png)
+![Transformer](https://github.com/regancz/Transformer/blob/main/document/img/Transformer.png)
 
 ## 快速开始
 
@@ -14,4 +14,4 @@ Transformer是一个变更数据捕获 (CDC) 平台，它通过重用 Kafka 和 
 2. 使用transformer-mbg模块生成使用的数据库crud操作
 3. 修改transformer-core中DebeziumListener的handleChangeEvent，自定义监听的事务处理，自定义RocketMQ的producer和consumer和后续流程。xx_replicateData提供了对数据库的操作，service提供了FabricMetric的使用示例
 
-![image-20230529113306679](C:\Users\Charles\AppData\Roaming\Typora\typora-user-images\image-20230529113306679.png)
+![image-20230529113306679](https://github.com/regancz/Transformer/blob/main/document/img/image-20230529113306679.png)
