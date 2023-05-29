@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static io.debezium.data.Envelope.FieldName.*;
@@ -33,8 +34,13 @@ public class FabricMetricService implements DataProcessService {
     @Override
     public Object DataProcess(Struct sourceRecordChangeValue) {
         if (sourceRecordChangeValue != null) {
-            Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
+            Struct source = (Struct) sourceRecordChangeValue.get(SOURCE);
+            LOGGER.info("source Data: {}", source);
+            LOGGER.info("source table: {}", source.get("table"));
+            if (!String.valueOf(source.get("table")).equals("fabric_metric"))
+                return null;
 
+            Envelope.Operation operation = Envelope.Operation.forCode((String) sourceRecordChangeValue.get(OPERATION));
             //Envelope.Operation.READ operation events are always triggered when application initializes
             //We're only interested in CREATE operation which are triggered upon new insert registry
             if(operation != Envelope.Operation.READ) {
@@ -52,8 +58,12 @@ public class FabricMetricService implements DataProcessService {
              //data processing
              Long afterTotalTx = Long.parseLong(String.valueOf(payload.get("total_tx"))) * 10000;
              payload.put("total_tx", afterTotalTx);
+             Map<String, Object> message = new HashMap<>();
+             message.put("table", String.valueOf(source.get("table")));
+             message.put(OPERATION, sourceRecordChangeValue.get(OPERATION));
+             message.put("payload", payload);
              //send to next station
-             fabricMetricSender.asyncSendOrderly("charles-fabric-metric", payload, String.valueOf(payload.get("id")));
+             fabricMetricSender.asyncSendOrderly("charles-fabric-metric", message, String.valueOf(payload.get("id")));
              }
         }
         return null;

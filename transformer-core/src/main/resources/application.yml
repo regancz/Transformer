@@ -35,6 +35,10 @@ customer:
     database: fabric
     username: root
     password: 123456
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
 
 
 

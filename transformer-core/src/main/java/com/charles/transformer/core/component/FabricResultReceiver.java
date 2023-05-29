@@ -30,6 +30,16 @@ public class FabricResultReceiver implements RocketMQListener<Map<String, Object
     @Override
     public void onMessage(Map<String, Object> message) {
         LOGGER.info("FabricResult Receiver:{}", message);
-        fabricMetricOutputService.replicateData(message, Envelope.Operation.forCode((String) message.get(OPERATION)));
+        try {
+            if (message == null || !message.containsKey("payload")) {
+                throw new IllegalArgumentException("Invalid input message.");
+            }
+            if (message.get("payload") instanceof Map) {
+                Map<String, Object> payload = (Map<String, Object>) message.get("payload");
+                fabricMetricOutputService.replicateData(payload, Envelope.Operation.forCode((String) message.get(OPERATION)));
+            }
+        } catch (Exception e) {
+            LOGGER.info(e.getMessage());
+        }
     }
 }
